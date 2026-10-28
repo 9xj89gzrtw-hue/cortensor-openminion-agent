@@ -1,0 +1,28 @@
+{
+  "targets": {
+    "portal": {
+      "label": "Cortensor Portal",
+      "base_url": "https://api.cortensor.app/v1",
+      "model": "oss-20b",
+      "api_key_env": "CORTENSOR_API_KEY",
+      "timeout": 480,
+      "notes": "Hosted OpenAI-compatible endpoint. Get a key at https://portal.cortensor.network"
+    },
+    "local": {
+      "label": "Local Ollama",
+      "base_url": "http://127.0.0.1:11434/v1",
+      "model": "llama3.1",
+      "api_key_env": "",
+      "timeout": 120,
+      "notes": "A convenient baseline while migrating to Cortensor."
+    },
+    "router": {
+      "label": "Cortensor Router (OpenAI gateway)",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "model": "gpt-oss-20b",
+      "api_key_env": "CORTENSOR_API_KEY",
+      "timeout": 420,
+      "notes": "Point this at your OpenAI-compatible gateway in front of Cortensor Router. For the native router protocol use the OpenMinion preset cortensor-router."
+    }
+  }
+}
