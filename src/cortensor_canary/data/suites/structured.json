@@ -1,0 +1,110 @@
+{
+  "name": "structured",
+  "version": "1.0",
+  "description": "JSON-only generation for downstream automation: sentiment, invoice fields, tool arguments and escalation flags. Catches models that wrap JSON in prose or drop keys.",
+  "default_max_tokens": 160,
+  "cases": [
+    {
+      "id": "json-sentiment",
+      "tags": [
+        "json",
+        "sentiment"
+      ],
+      "prompt": "Classify the sentiment: 'The update broke our checkout and support has not replied for two days.' Reply with JSON only: {\"sentiment\": \"positive|neutral|negative\", \"confidence\": 0.0}",
+      "max_tokens": 96,
+      "expect": {
+        "type": "json",
+        "keys": [
+          "sentiment",
+          "confidence"
+        ],
+        "equals": {
+          "sentiment": "negative"
+        }
+      }
+    },
+    {
+      "id": "json-invoice",
+      "tags": [
+        "json",
+        "extraction"
+      ],
+      "prompt": "Extract vendor, amount and currency: 'Acme GmbH invoiced 1290 EUR for the annual plan.' Reply with JSON only: {\"vendor\": \"...\", \"amount\": 0, \"currency\": \"...\"}",
+      "max_tokens": 96,
+      "expect": {
+        "type": "json",
+        "keys": [
+          "vendor",
+          "amount",
+          "currency"
+        ],
+        "equals": {
+          "vendor": "Acme GmbH",
+          "amount": 1290,
+          "currency": "EUR"
+        }
+      }
+    },
+    {
+      "id": "json-weather-args",
+      "tags": [
+        "json",
+        "tool-args"
+      ],
+      "prompt": "Convert this request into weather API arguments: 'What is it like in Berlin in Celsius?' Reply with JSON only: {\"city\": \"...\", \"unit\": \"celsius|fahrenheit\"}",
+      "max_tokens": 96,
+      "expect": {
+        "type": "json",
+        "keys": [
+          "city",
+          "unit"
+        ],
+        "equals": {
+          "city": "Berlin",
+          "unit": "celsius"
+        }
+      }
+    },
+    {
+      "id": "json-tags",
+      "tags": [
+        "json",
+        "arrays"
+      ],
+      "prompt": "Return two lowercase tags for this ticket: 'Payment failed twice, please fix billing.' Reply with JSON only: {\"tags\": [\"...\", \"...\"]}",
+      "max_tokens": 96,
+      "expect": {
+        "type": "json",
+        "keys": [
+          "tags"
+        ],
+        "equals": {
+          "tags": [
+            "billing",
+            "payment"
+          ]
+        },
+        "unordered": true
+      }
+    },
+    {
+      "id": "json-escalate",
+      "tags": [
+        "json",
+        "boolean"
+      ],
+      "prompt": "Should this ticket be escalated? 'Our production API returns 500 for every request since the last deploy.' Reply with JSON only: {\"escalate\": true|false, \"reason\": \"...\"}",
+      "max_tokens": 128,
+      "expect": {
+        "type": "json",
+        "keys": [
+          "escalate",
+          "reason"
+        ],
+        "equals": {
+          "escalate": true
+        }
+      }
+    }
+  ]
+}

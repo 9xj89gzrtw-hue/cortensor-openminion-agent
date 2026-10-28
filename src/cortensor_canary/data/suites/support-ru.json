@@ -1,0 +1,75 @@
+{
+  "name": "support-ru",
+  "version": "1.0",
+  "description": "Russian support-ticket triage: six intent labels plus order-id extraction. Mirrors a real first-line support workload.",
+  "default_max_tokens": 96,
+  "cases": [
+    {
+      "id": "ru-double-charge",
+      "tags": ["billing", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Списали деньги дважды за одну подписку». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-crash-login",
+      "tags": ["tech", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Приложение вылетает сразу после входа в аккаунт». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-password-reset",
+      "tags": ["account", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Не приходит письмо для сброса пароля». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-not-delivered",
+      "tags": ["delivery", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Посылка не пришла, трек-номер не обновлялся неделю». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-refund-broken",
+      "tags": ["refund", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Хочу вернуть деньги, товар пришёл разбитым». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-praise",
+      "tags": ["other", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Спасибо, всё работает отлично, вы лучшие!». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-error-500",
+      "tags": ["tech", "classification"],
+      "prompt": "Ты — классификатор обращений в поддержку. Определи категорию: «Сайт падает с ошибкой 500 при открытии заказа». Ответь одной меткой: billing, tech, account, delivery, refund или other.",
+      "max_tokens": 16,
+      "expect": {"type": "label", "value": ["billing", "tech", "account", "delivery", "refund", "other"]}
+    },
+    {
+      "id": "ru-order-lookup",
+      "tags": ["json", "extraction"],
+      "prompt": "Извлеки номер заказа из текста: «Где мой заказ #4821?». Ответь только JSON: {\"order_id\": \"...\"}",
+      "max_tokens": 64,
+      "expect": {"type": "json", "keys": ["order_id"], "equals": {"order_id": "4821"}}
+    },
+    {
+      "id": "ru-json-intent",
+      "tags": ["json", "classification"],
+      "prompt": "Верни только JSON с полями intent и order_id для текста: «Заказ #7788 не доставили, трек-номер не обновлялся». intent — одна из меток: billing, tech, account, delivery, refund, other.",
+      "max_tokens": 96,
+      "expect": {
+        "type": "json",
+        "keys": ["intent", "order_id"],
+        "equals": {"intent": "delivery", "order_id": "7788"}
+      }
+    }
+  ]
+}
