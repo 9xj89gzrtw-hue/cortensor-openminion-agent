@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Compile
+        run: python -m compileall -q src tests
+
+      - name: Unit and integration tests (offline)
+        env:
+          PYTHONPATH: src
+          CANARY_MOCK_KEY: mock
+        run: python -m unittest discover -s tests -v
+
+      - name: Offline demo
+        env:
+          CANARY_MOCK_KEY: mock
+        run: |
+          # `demo` always exits 0: it demonstrates a failing gate, it is not a gate itself.
+          ./canary demo --workspace "$RUNNER_TEMP/canary-demo"
+          report=$(ls "$RUNNER_TEMP"/canary-demo/reports/*/report.html | head -1)
+          test -f "$report"
+          grep -q "FAIL" "$report"
+
+      - name: Gate exit code is 1 on FAIL
+        env:
+          CANARY_MOCK_KEY: mock
+        run: |
+          set +e
+          ./canary demo --workspace "$RUNNER_TEMP/canary-demo2" >/dev/null
+          ./canary compare \
+            "$(ls "$RUNNER_TEMP"/canary-demo2/runs/*-mock-baseline-*.json | head -1)" \
+            "$(ls "$RUNNER_TEMP"/canary-demo2/runs/*-mock-candidate-*.json | head -1)" \
+            --out "$RUNNER_TEMP/compare-out"
+          code=$?
+          set -e
+          echo "compare exit code: $code"
+          test "$code" -eq 1
+
+  agent:
+    name: agent (openminion)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install OpenMinion
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'openminion>=0.1.14'
+
+      - name: Agent tool-loop tests
+        env:
+          PYTHONPATH: src
+          CANARY_MOCK_KEY: mock
+          HOME: ${{ runner.temp }}
+        run: python -m unittest tests.test_agent -v
+
+      - name: Agent demo
+        env:
+          CANARY_MOCK_KEY: mock
+          HOME: ${{ runner.temp }}
+        run: |
+          ./canary demo --agent --workspace "$RUNNER_TEMP/canary-agent" | tee agent.log
+          grep -q "tool calls: 5" agent.log
+          grep -q "tool errors: 0" agent.log
+          grep -qi "verdict: FAIL" agent.log
+
+  docker:
+    name: docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: cortensor-canary:ci
+      - name: Run demo inside the image
+        run: docker run --rm cortensor-canary:ci

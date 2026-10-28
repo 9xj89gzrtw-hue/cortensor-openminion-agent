@@ -1,0 +1,187 @@
+{
+  "schema": "cortensor-canary/run/v1",
+  "run_id": "20261028T113942Z-mock-baseline-smoke",
+  "created_at": "2026-10-28T11:39:42Z",
+  "started_at": "2026-10-28T11:39:42Z",
+  "finished_at": "2026-10-28T11:39:42Z",
+  "duration_ms": 201.6,
+  "target": {
+    "name": "mock-baseline",
+    "label": "Mock baseline",
+    "base_url": "http://127.0.0.1:65356/v1",
+    "model": "mock-good",
+    "api_key_env": "CANARY_MOCK_KEY",
+    "timeout": 120.0,
+    "notes": ""
+  },
+  "suite": {
+    "name": "smoke",
+    "description": "Six fast checks: arithmetic, JSON extraction, Russian intent labels and instruction following. Runs in under a minute on most endpoints.",
+    "version": "1.0",
+    "path": "/Users/evgenijdanilov/moneymaker/work/cortensor-openminion-agent/src/cortensor_canary/data/suites/smoke.json",
+    "cases": 6
+  },
+  "metrics": {
+    "cases": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "pass_rate": 1.0,
+    "score": 1.0,
+    "error_rate": 0.0,
+    "latency_ms": {
+      "p50": 32.5,
+      "p95": 37.4,
+      "mean": 33.5,
+      "min": 31.2,
+      "max": 37.4
+    },
+    "tokens": {
+      "prompt": 170,
+      "completion": 18,
+      "total": 188
+    }
+  },
+  "cases": [
+    {
+      "id": "math-17x23",
+      "tags": [
+        "math",
+        "reasoning"
+      ],
+      "prompt": "What is 17 * 23? Reply with the number only.",
+      "expected": {
+        "type": "exact",
+        "value": "391"
+      },
+      "response": "391",
+      "passed": true,
+      "score": 1.0,
+      "detail": "exact match: '391'",
+      "latency_ms": 32.7,
+      "prompt_tokens": 25,
+      "completion_tokens": 1,
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "id": "math-discount",
+      "tags": [
+        "math"
+      ],
+      "prompt": "A laptop costs 80 000 RUB. It is discounted by 15%. What is the final price in RUB? Reply with the number only.",
+      "expected": {
+        "type": "exact",
+        "value": "68000"
+      },
+      "response": "68000",
+      "passed": true,
+      "score": 1.0,
+      "detail": "exact match: '68000'",
+      "latency_ms": 31.5,
+      "prompt_tokens": 41,
+      "completion_tokens": 1,
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "id": "json-order",
+      "tags": [
+        "json",
+        "extraction"
+      ],
+      "prompt": "Extract the order id and the total from this text: 'Order #A-1042, total 12 990 RUB'. Reply with JSON only, no prose: {\"order_id\": \"...\", \"total\": 0}",
+      "expected": {
+        "type": "json",
+        "keys": [
+          "order_id",
+          "total"
+        ],
+        "equals": {
+          "order_id": "A-1042",
+          "total": 12990
+        }
+      },
+      "response": "{\"order_id\": \"A-1042\", \"total\": 12990}",
+      "passed": true,
+      "score": 1.0,
+      "detail": "JSON ok: keys=['order_id', 'total']",
+      "latency_ms": 35.7,
+      "prompt_tokens": 37,
+      "completion_tokens": 9,
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "id": "ru-double-charge",
+      "tags": [
+        "russian",
+        "classification"
+      ],
+      "prompt": "Классифицируй обращение клиента: «Списали деньги дважды за одну подписку». Ответь одной меткой: billing, tech, account или other.",
+      "expected": {
+        "type": "label",
+        "value": [
+          "billing",
+          "tech",
+          "account",
+          "other"
+        ]
+      },
+      "response": "billing",
+      "passed": true,
+      "score": 1.0,
+      "detail": "label 'billing'",
+      "latency_ms": 31.2,
+      "prompt_tokens": 32,
+      "completion_tokens": 1,
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "id": "instruction-three-colors",
+      "tags": [
+        "instruction"
+      ],
+      "prompt": "List exactly three primary colors, comma-separated, in lowercase. Do not add anything else.",
+      "expected": {
+        "type": "regex",
+        "value": "^(?=.*\\bred\\b)(?=.*\\bblue\\b)(?=.*\\byellow\\b)(?!.*\\bgreen\\b).*$"
+      },
+      "response": "red, blue, yellow",
+      "passed": true,
+      "score": 1.0,
+      "detail": "matched 'red, blue, yellow'",
+      "latency_ms": 32.5,
+      "prompt_tokens": 22,
+      "completion_tokens": 4,
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "id": "capital-australia",
+      "tags": [
+        "knowledge"
+      ],
+      "prompt": "What is the capital of Australia? Answer with one word.",
+      "expected": {
+        "type": "exact",
+        "value": "Canberra"
+      },
+      "response": "Canberra",
+      "passed": true,
+      "score": 1.0,
+      "detail": "exact match: 'canberra'",
+      "latency_ms": 37.4,
+      "prompt_tokens": 13,
+      "completion_tokens": 2,
+      "attempts": 1,
+      "error": ""
+    }
+  ],
+  "meta": {
+    "tool": "cortensor-canary/0.1.0",
+    "python": "3.11.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  }
+}

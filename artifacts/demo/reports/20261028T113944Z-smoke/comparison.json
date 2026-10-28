@@ -1,0 +1,115 @@
+{
+  "schema": "cortensor-canary/comparison/v1",
+  "created_at": "2026-10-28T11:39:44Z",
+  "status": "FAIL",
+  "gates": {
+    "max_quality_drop_pp": 2.0,
+    "max_p95_latency_increase_pct": 25.0,
+    "max_error_rate_pct": 2.0
+  },
+  "baseline": {
+    "run_id": "20261028T113942Z-mock-baseline-smoke",
+    "target": "mock-baseline",
+    "target_label": "Mock baseline",
+    "model": "mock-good",
+    "suite": "smoke",
+    "metrics": {
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "errors": 0,
+      "pass_rate": 1.0,
+      "score": 1.0,
+      "error_rate": 0.0,
+      "latency_ms": {
+        "p50": 32.5,
+        "p95": 37.4,
+        "mean": 33.5,
+        "min": 31.2,
+        "max": 37.4
+      },
+      "tokens": {
+        "prompt": 170,
+        "completion": 18,
+        "total": 188
+      }
+    }
+  },
+  "candidate": {
+    "run_id": "20261028T113944Z-mock-candidate-smoke",
+    "target": "mock-candidate",
+    "target_label": "Mock candidate (degraded)",
+    "model": "mock-degraded",
+    "suite": "smoke",
+    "metrics": {
+      "cases": 6,
+      "passed": 5,
+      "failed": 1,
+      "errors": 0,
+      "pass_rate": 0.8333,
+      "score": 0.8333,
+      "error_rate": 0.0,
+      "latency_ms": {
+        "p50": 253.8,
+        "p95": 256.6,
+        "mean": 254.4,
+        "min": 252.0,
+        "max": 256.6
+      },
+      "tokens": {
+        "prompt": 170,
+        "completion": 20,
+        "total": 190
+      }
+    }
+  },
+  "deltas": {
+    "pass_rate_pp": -16.67,
+    "score_pp": -16.67,
+    "p50_latency_pct": 680.92,
+    "p95_latency_pct": 586.1,
+    "error_rate_pp": 0.0,
+    "tokens_total_pct": 1.06
+  },
+  "checks": [
+    {
+      "name": "quality",
+      "status": "fail",
+      "value": -16.67,
+      "gate": -2.0,
+      "unit": "pp",
+      "message": "pass rate dropped 16.7 pp (limit 2.0)"
+    },
+    {
+      "name": "latency_p95",
+      "status": "fail",
+      "value": 586.1,
+      "gate": 25.0,
+      "unit": "%",
+      "message": "p95 latency grew +586.1% (hard limit 50%)"
+    },
+    {
+      "name": "errors",
+      "status": "pass",
+      "value": 0.0,
+      "gate": 2.0,
+      "unit": "%",
+      "message": "error rate 0.0%"
+    }
+  ],
+  "reasons": [
+    "pass rate dropped 16.7 pp (limit 2.0)",
+    "p95 latency grew +586.1% (hard limit 50%)"
+  ],
+  "cases": {
+    "common": 6,
+    "regressed": [
+      "instruction-three-colors"
+    ],
+    "fixed": [],
+    "still_failing": [],
+    "only_baseline": [],
+    "only_candidate": []
+  },
+  "verdict_text": "Cortensor Canary verdict: FAIL\nBaseline:  mock-baseline / mock-good / smoke (6 cases)\nCandidate: mock-candidate / mock-degraded / smoke (6 cases)\n\n  quality         -16.7pp  (gate -2.0pp)  FAIL\n  latency_p95    +586.1%   (gate +25.0%)  FAIL\n  errors           +0.0%   (gate +2.0%)  PASS\n\nRegressions: 1 -> instruction-three-colors\n\nReasons:\n  - pass rate dropped 16.7 pp (limit 2.0)\n  - p95 latency grew +586.1% (hard limit 50%)\n\nRecommendation: do not promote. Keep the baseline and fix the failing cases first."
+}

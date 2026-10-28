@@ -1,0 +1,26 @@
+services:
+  canary:
+    build: .
+    image: cortensor-canary:0.1.0
+    command: ["canary", "demo", "--workspace", "/app/artifacts/demo"]
+    environment:
+      # Only needed for a real gate; the demo ignores it.
+      CORTENSOR_API_KEY: ${CORTENSOR_API_KEY:-}
+      CANARY_MOCK_KEY: ${CANARY_MOCK_KEY:-mock}
+    volumes:
+      - ./artifacts:/app/artifacts
+      # Mount your own targets/suites without rebuilding the image:
+      - ./config:/app/config:ro
+    # `demo` exits 0 on purpose: it demonstrates a failing gate, it is not the gate.
+    restart: "no"
+
+  canary-agent:
+    build: .
+    image: cortensor-canary:0.1.0
+    profiles: ["agent"]
+    command: ["canary", "demo", "--agent", "--workspace", "/app/artifacts/demo-agent"]
+    environment:
+      CANARY_MOCK_KEY: ${CANARY_MOCK_KEY:-mock}
+    volumes:
+      - ./artifacts:/app/artifacts
+    restart: "no"

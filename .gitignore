@@ -1,0 +1,32 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Local run artifacts
+artifacts/*
+!artifacts/demo/
+!artifacts/demo/**
+
+# Secrets and local config
+.env
+.env.local
+config/targets.local.json
+.openminion/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
