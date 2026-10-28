@@ -7,7 +7,17 @@ import { join, resolve } from "node:path";
 // Playwright is usually only present in the npx cache, and NODE_PATH is ignored
 // by ESM imports, so resolve it through a CommonJS require.
 const require = createRequire(import.meta.url);
-const { chromium } = require("playwright");
+
+let chromium;
+try {
+  ({ chromium } = require("playwright"));
+} catch {
+  console.error(
+    "playwright not found. Install it (npm i -D playwright) or run:\n" +
+      "  NODE_PATH=$(npm root -g) node scripts/screenshots.mjs",
+  );
+  process.exit(1);
+}
 
 // Use the installed Chrome: the bundled browser download is not always present,
 // and the machine's Chrome is enough for a static HTML page.

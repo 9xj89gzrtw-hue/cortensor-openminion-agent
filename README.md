@@ -1,5 +1,10 @@
 # Cortensor Canary
 
+[![ci](https://github.com/9xj89gzrtw-hue/cortensor-openminion-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/9xj89gzrtw-hue/cortensor-openminion-agent/actions/workflows/ci.yml)
+![python](https://img.shields.io/badge/python-3.9%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
+![dependencies](https://img.shields.io/badge/runtime%20deps-0-brightgreen)
+![license](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
+
 **A release gate for LLM endpoints.** Run your own task suite against the endpoint you use today and
 against a candidate (Cortensor Portal, a local Cortensor Router, Ollama, vLLM, anything
 OpenAI-compatible), then get a deterministic **PASS / WARN / FAIL** verdict with the failing cases
