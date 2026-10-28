@@ -228,7 +228,9 @@ def run_agent(
     """Run one OpenMinion agent turn. Returns ``AgentRunResult``."""
     if not openminion_available():
         raise AgentUnavailable(
-            "openminion is not installed. Run: python3.11 -m pip install 'openminion>=0.1.14'"
+            "openminion is not installed for this interpreter. "
+            "Run: python3.11 -m pip install 'openminion>=0.1.14', then "
+            "PYTHON=python3.11 ./canary agent ..."
         )
     from openminion import Agent, APIRuntime
 

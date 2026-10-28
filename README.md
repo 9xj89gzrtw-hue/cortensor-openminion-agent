@@ -167,6 +167,12 @@ CANARY_MOCK_KEY=mock ./canary demo --agent
 # ... [agent] inference steps: 9, tool calls: 5, tool errors: 0, tokens: 5189
 ```
 
+If `openminion` lives in a different interpreter than the one the wrapper picks, point it there:
+
+```bash
+PYTHON=python3.11 ./canary agent "Can Cortensor replace my baseline for support-ru?"
+```
+
 OpenMinion ships native `cortensor-portal` and `cortensor-router` presets, so no custom adapter is required.
 
 ![Gate details](artifacts/demo/report-gates.png)

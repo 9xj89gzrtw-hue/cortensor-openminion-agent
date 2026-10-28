@@ -85,6 +85,8 @@ jobs:
         env:
           CANARY_MOCK_KEY: mock
           HOME: ${{ runner.temp }}
+          # The wrapper picks python3.12 by default; OpenMinion is installed in 3.11 here.
+          PYTHON: python3.11
         run: |
           ./canary demo --agent --workspace "$RUNNER_TEMP/canary-agent" | tee agent.log
           grep -q "tool calls: 5" agent.log
