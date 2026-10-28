@@ -19,6 +19,10 @@ on FAIL, which is what CI consumes.
 <!-- Screenshots live in artifacts/demo/ and are produced by scripts/screenshots.mjs -->
 ![Verdict overview](artifacts/demo/report-overview.png)
 
+**65-second demo video** — [`artifacts/demo/demo.mp4`](artifacts/demo/demo.mp4): a real run, recorded from a pty
+(`scripts/make_demo_video.py`), showing `version → suites → targets → demo --agent → 65 tests → the generated
+HTML report`. Terminal replay is slowed to 0.65× for readability; every number in it comes from that run.
+
 ## Why this exists
 
 Moving inference to a decentralized network (Cortensor) or to a cheaper provider is a **release**,
